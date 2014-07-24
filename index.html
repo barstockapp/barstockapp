@@ -8,25 +8,63 @@
 
 <body>
     <div id="wrapper">
+        <div id="userInfo">
+            <p>Logged in as <span id="currentUser"></span> (<a href="#" class="log-out">Log out</a>)</p>
+        </div>
         <form id="signupAdminForm">
             <h3>Create Bar Admin User</h3>
             <input id="signupBarName" name="signupBarName" placeholder="Bar Name" type="text" class="txtInput" /><br>
             <input id="signupAdminUsername" name="signupAdminUsername" placeholder="Username" type="text" class="txtInput" /><br>
             <input id="signupAdminEmail" name="signupAdminEmail" placeholder="Your email address" type="email" class="txtInput" /><br>
             <input id="signupAdminPassword" name="signupAdminPassword" placeholder="Password" type="password" class="txtInput" /><br>
-            <button type="submit" id="signupSubmit" title="Submit">Submit</button>
+            <p id="signupAdminError" class="form-error"></p>
+            <button type="submit" id="signupSubmit" title="Submit">Submit</button><br><br>
+            <p class="formExtra">Already signed-up? <a id="loginLink" href="#">Login here</a>.</p>
         </form>
-        <form id="loginForm">
+        <div id="adminSignupSuccess">
+            <h3>Successful Admin User Signup for <span class="barname"></span></h3>
+            <p>You'll receive an email asking you to verify your email address. You must click on the link in this verification email to confirm your email address.</p>
+            <p>After you have verified your email address you may login with the form below to register your <span class="ital">BarStockApp's</span> users.</p>
+        </div>
+        <div id="emailNotVerified">
+            <h3>Email Verication failed</h3>
+            <p>You need to verify your email address before you can login to BarstockApp as an admin user.</p>
+            <p>Check your email and click on the link in the verification email to confirm your email address.</p>
+        </div>
+        <form id="loginAdminForm">
+            <h3>Admin Login</h3>
+            <input id="loginAdminUsername" name="loginAdminUsername" placeholder="Username" type="text" class="txtInput" /><br>
+            <input id="loginAdminPassword" name="loginAdminPassword" placeholder="Password" type="password" class="txtInput" /><br>
+            <button type="submit" id="loginAdminSubmit" title="Submit">Submit</button><br><br>
+            <p class="formExtra"><a id="signupLink" href="#">Signup</a> | <a id="forgottenLink" href="#">Forgot password</a></p>
+        </form>
+        <form id="forgotPasswordForm">
+            <h3>Password Reset</h3>
+            <input id="forgotPasswordEmail" name="forgotPasswordEmail" placeholder="Your email address" type="email" class="txtInput" /><br>
+            <p id="forgotPasswordError" class="form-error"></p>
+            <button type="submit" id="forgotPasswordSubmit" title="Submit">Submit</button><br><br>
+            <p class="formExtra"><a id="backToLoginLink" href="#">Back to Login</a></p>
+            <p id="forgotPasswordError"></p>
+        </form>
+        <div id="PasswordResetEmailSent">
+            <h3>Password Reset Email Sent</h3>
+            <p>We have sent you an email to with a link to reset your password.</p>
+            <p>After completing the reset process. You may use your new password to <a href="#" id="loginFromPasswordReset">login</a>.</p>
+        </div>
+        <form id="signupUserForm">
+            <h3>Create User for <span class="barname"></span></h3>
+            <input id="signupUsername" name="signupUsername" placeholder="Username" type="text" class="txtInput" /><br>
+            <input id="signupUserEmail" name="signupUserEmail" placeholder="User's email address" type="email" class="txtInput" /><br>
+            <input id="signupUserPassword" name="signupUserPassword" placeholder="Password" type="password" class="txtInput" /><br>
+            <p id="signupUserError" class="form-error"></p>
+            <button type="submit" id="signupUserSubmit" title="Submit">Submit</button>
             
         </form>
-        <form id="signupUserForm">
-            <h3>Create BarStock User for <span id="Barname"></span></h3>
-            <input id="signupUsername" name="signupUsername" placeholder="Username" type="text" class="txtInput" /><br>
-            <input id="signupPassword" name="signupPassword" placeholder="Password" type="password" class="txtInput" /><br>
-            <button type="submit" id="signupSubmit" title="Submit">Submit</button>
-        </form>
+        <div id="userCreated">
+            <p><a href="#" id="createAnother">Create another user</a></p>
+            <p>BarStockApp user <span id="barStockUser"></span> succefully created.</p>
+        </div>
     </div>
-    
 
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery.validate.min.js"></script>
@@ -40,6 +78,33 @@ $(document).ready(function () {
     Parse.initialize("uyUUfhm9dYAHzt8cSRwr2X1gbobec7LUp9BHYpxz",
                    "HHQGaXvwb0vWOY0m1wM4h2iPSvcqyjNVfbiuj70S");
     
+    var barname;
+    var $sessionToken;
+    var $currentAdminUser;
+    var appusername;
+    
+    var $relation;
+
+    $('#loginLink').click(function(){
+        $('#signupAdminForm').hide();
+        $('#loginAdminForm').show();
+    });
+    $('#signupLink').click(function(){ 
+        $('#loginAdminForm').hide();
+        $('#signupAdminForm').show();
+    });
+    $('#forgottenLink').click(function(){ 
+        $('#loginAdminForm').hide();
+        $('#forgotPasswordForm').show();
+    });
+    $('#backToLoginLink').click(function(){ 
+        $('#forgotPasswordForm').hide();
+        $('#loginAdminForm').show();
+    });
+    $('#loginFromPasswordReset').click(function(){ 
+        $('#PasswordResetEmailSent').hide();
+        $('#loginAdminForm').show();
+    });
     
     //== Signup Admin ==============================================
     $("#signupAdminForm").validate({
@@ -61,7 +126,7 @@ $(document).ready(function () {
     },
     messages: {
         signupBarName: {
-            required: "specify username"
+            required: "specify bar name"
       },
         signupAdminUsername: {
             required: "specify username"
@@ -70,32 +135,229 @@ $(document).ready(function () {
             required: "specify email"
       },
         signupAdminPassword: {
-            required: "specify password"
+            required: "specify 5 character password"
       }
     },
     submitHandler: function (form) { // for demo
+        $('#signupSubmit').attr("disabled", "disabled");
+        $('p.form-error').hide();
         var user = new Parse.User();
         user.set("username", $("#signupAdminUsername").val());
         user.set("password", $("#signupAdminPassword").val());
         user.set("email", $("#signupAdminEmail").val());
  
         // other fields can be set just like with Parse.Object
-        user.set("BarName", $("#signupBarName").val());
-        user.set("Admin", "Yes");
+        user.set("barname", $("#signupBarName").val());
+        user.set("admin", "Yes");
+        user.set("users", []);
  
         user.signUp(null, {
             success: function(user) {
-                alert("Successful Signup: " + $("#signupAdminUsername").val());
+                $('#signupSubmit').removeAttr("disabled");
+                $('#signupAdminForm').hide();
+
+                user.fetch().then(function(fetchedUser){
+                        
+                        barname = fetchedUser.attributes.barname;
+                        $('span.barname').text(barname);
+
+                    }, function(error){
+                        console.log(error);
+                });
+                
+                $('#adminSignupSuccess, #loginAdminForm').show();
             },
             error: function(user, error) {
                 // Show the error message somewhere and let the user try again.
-                alert("Error: " + error.code + " " + error.message);
+                $("#signupAdminError").text(error.message).show();
+                $('#signupSubmit').removeAttr("disabled");
                 }
             }); 
             return false;
         }
     });
     
+     //== Admin Login ==============================================
+    $("#loginAdminForm").validate({
+        rules: {
+            loginAdminUsername: {
+            required: true
+      },
+        loginAdminPassword: {
+            required: true,
+            minlength: 5
+      }
+    },
+    messages: {
+        loginAdminUsername: {
+            required: "specify username"
+      },
+        loginAdminPassword: {
+            required: "specify password"
+      }
+    },
+    submitHandler: function (form) { // for demo
+        $('#loginAdminSubmit').attr("disabled", "disabled");
+        var adminUserName =  $("#loginAdminUsername").val();
+        var adminUserPassword =  $("#loginAdminPassword").val();
+        
+        Parse.User.logIn(adminUserName, adminUserPassword, {
+            success: function(user) {
+             $('#loginAdminSubmit').removeAttr("disabled");
+
+             var tempSessionToken = user._sessionToken;
+             user.fetch().then(function(fetchedUser)    {
+                        var emailVerified = fetchedUser.attributes.emailVerified;
+                        barname = fetchedUser.attributes.barname;
+                        $('span.barname').text(barname);
+                        console.log("Email verified: " + emailVerified);
+                        currentAdminUser = Parse.User.current()
+
+                        if(emailVerified == false) {
+                            $('#adminSignupSuccess').hide();
+                            $('#emailNotVerified').show();
+                            
+                        }else if(emailVerified == true) {
+                            $sessionToken = tempSessionToken;
+                            $('#adminSignupSuccess, #emailNotVerified, #loginAdminForm').hide();
+                            $('#signupUserForm').show();
+                        }
+        
+                    }, function(error){
+                        console.log(error);
+                });
+            },
+            error: function(user, error) {
+              $('#loginAdminSubmit').removeAttr("disabled");
+              alert("Error: " + error.code + " " + error.message);
+            }
+        });
+        }
+    });
+    
+    //== User Signup ==============================================
+    $("#signupUserForm").validate({
+        rules: {
+            signupUsername: {
+                required: true
+        },
+        signupUserEmail: {
+            required: true,
+            email: true    
+      },
+        signupUserPassword: {
+                required: true,
+                minlength: 4
+        }
+    },
+    messages: {
+            signupUsername: {
+            required: "specify username"
+            },
+            signupUserEmail: {
+            required: "specify email"
+            },
+            signupUserPassword: {
+                required: "specify 4 character password"
+            }
+        },     
+        submitHandler: function (form) { // for demo
+            $('#signupUserSubmit').attr("disabled", "disabled");
+            $('p.form-error').hide();
+            var user = new Parse.User();
+            user.set("username", $("#signupUsername").val());
+            user.set("password", $("#signupUserPassword").val());
+ 
+            // other fields can be set just like with Parse.Object
+            user.set("barname", barname);
+            user.set("useremail", $("#signupUserEmail").val());
+            user.set("admin", "No");
+ 
+            user.signUp(null, {
+                success: function(user) {
+
+                    $('#signupUserSubmit').removeAttr("disabled");
+                    
+                    user.fetch().then(function(fetchedUser) {
+                        appusername = fetchedUser.attributes.username;
+                        $('span#barStockUser').text(appusername);
+                        
+                        $('#userCreated').show();
+                        $('#signupUserSubmit').hide();
+                        $('#createAnother').show()
+
+                        }, function(error) {
+                            $('#signupSubmit').removeAttr("disabled");
+                            console.log(error);
+                    });
+                
+                    Parse.User.become($sessionToken).then(function (user) {
+                        
+                        user.fetch().then(function(fetchedUser) {
+                                console.log(fetchedUser.attributes.username);
+                                var usersArray = fetchedUser.attributes.users;
+                                usersArray.push(appusername);
+                                console.log(usersArray);
+                                user.set("users", usersArray);
+                                user.save();
+                            }, function(error) {
+                                console.log(error);
+                        });
+                                  
+                    }, function (error) {
+                        // The token could not be validated.
+                    });
+                
+            },
+            error: function(user, error) {
+                // Show the error message somewhere and let the user try again.
+                $("#signupUserError").text(error.message).show();
+                $('#signupUserSubmit').removeAttr("disabled");
+                }
+            });
+            
+            
+            return false;
+        }
+    });
+    
+    //== Password Reset ==============================================
+    $("#forgotPasswordForm").validate({
+        rules: {
+            forgotPasswordEmail: {
+             required: true,
+                email: true
+      }
+    },
+    messages: {
+        forgotPasswordEmail: {
+            required: "specify email"
+      }
+    },
+    submitHandler: function (form) {
+            $('#forgotPasswordSubmit').attr("disabled", "disabled");
+            var email = $("#forgotPasswordEmail").val();
+
+            Parse.User.requestPasswordReset(email , {
+                success: function () {
+                    $('#forgotPasswordSubmit').removeAttr("disabled");
+                    $('#forgotPasswordForm').hide();
+                    $('#PasswordResetEmailSent').show();
+                },
+                error: function (error) {
+                    $("#forgotPasswordError").text(error.message).show();
+                    $('#forgotPasswordSubmit').removeAttr("disabled");
+                }
+            });
+            return false;
+        }
+    });
+    
+    $("#createAnother").click(function() {
+        $("#signupUserForm").find("input[type=text], input[type=email], input[type=password]").val("");
+        $("#createAnother, #userCreated").hide();
+        $('#signupUserSubmit').show();
+    });
     
 });
 

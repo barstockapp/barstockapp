@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Cashup</title>
+    <meta name="viewport" content="width=device=width, maximum-scale=1, user-scalable=no" />
+    <meta name="mobile-web-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="css/style.css" media="all" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+
+    <form id="cashupForm">
+        <table cellpadding="0" cellspacing="0" id="cashupTable">
+            <tr>
+                <th colspan="2">Cashup</th>
+            </tr>
+            <tr>
+                <td>Total Sales</td>
+                <td><input type="number" id="totalSales" name="totalSales"></td>
+            </tr>
+            <tr>
+                <td>CC Sales</td>
+                <td><input type="number" id="ccSales" name="ccSales"></td>
+            </tr>
+            <tr>
+                <td>CC Slips</td>
+                <td><input type="number" id="ccSlips" name="ccSlips"></td>
+            </tr>
+            <tr>
+                <td><button type="submit" id="cashupSubmit" title="Submit">Cashup</button></td>
+                <td id="cashupTotal"></td>
+            </tr>
+            <tr>
+                <td><a id="resetButton">Reset</a></td>
+                <td><a id="resetButton">Reset</a></td>
+            </tr>
+        </table>
+    </form>
+
+
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery.validate.min.js"></script>
+
+<script>
+    
+$(document).ready(function () {
+    
+    $("#cashupForm").validate({
+    rules: {
+        totalSales: {
+            required: true,
+            number: true
+      },
+        ccSales: {
+            required: true,
+            number: true
+      },
+        ccSlips: {
+            required: true,
+            number: true    
+      }
+    },
+    messages: {
+        totalSales: {
+            required: "Specify Total Sales"
+      },
+        ccSales: {
+            required: "Specify CC Sales"
+      },
+        ccSlips: {
+            required: "Specify CC Slips"
+      }
+    },
+    submitHandler: function (form) { // for demo
+            var $totalSales = $("#totalSales").val();
+            var $ccSales = $("#ccSales").val();
+            var $ccSlips = $("#ccSlips").val();
+
+            var $totalSalesMinCCSales = ($totalSales - $ccSlips);
+            var $diffCCSlipsCCSales;
+            if ($ccSales > $ccSlips) {
+                $diffCCSlipsCCSales = 0;
+            }else {
+               $diffCCSlipsCCSales = ($ccSlips - $ccSales) * 0.10;
+            }
+            var $total = $totalSalesMinCCSales + $diffCCSlipsCCSales;
+            $total = "R " + $total;
+            $("#cashupTotal").text($total);
+            $("#cashupSubmit").hide();
+            $("#resetButton").show();
+        }
+    });
+
+$("#resetButton").click(function(){
+    $("#totalSales").val("");
+    $("#ccSales").val("");
+    $("#ccSlips").val("");
+    $("#cashupTotal").text("");
+    $("#resetButton").hide();
+    $("#cashupSubmit").show();
+
+});
+    
+});
+
+</script>                
+</body>
+</html>

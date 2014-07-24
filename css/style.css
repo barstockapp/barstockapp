@@ -1,11 +1,13 @@
 * { margin: 0; padding: 0; }
-#wrapper { width: 600px; margin: 0 auto; padding: 50px; font-family: Helvetica, Arial, sans-serif; color: #333; }
+body { font-family: Helvetica, Arial, sans-serif; color: #444; }
+#wrapper { width: 600px; margin: 0 auto; padding: 50px;  }
 h3 { margin-bottom: 20px; }
+p { margin-bottom: 1.5em; line-height: 1.4em; }
+span.ital { font-style: italic; }
 form input.txtInput { margin: 0 0 10px 0; padding: 5px; width: 300px; height: 30px; font-size: 16px; line-height: 30px; }
 button[type="submit"] {
     padding:5px 15px;
     background:#ccc;
-    border:0 none;
     cursor:pointer;
     -webkit-border-radius: 5px;
     border-radius: 5px;
@@ -14,11 +16,29 @@ button[type="submit"] {
     font-size: 16px;
     margin-top: 10px;
     }
-
-#signupUserForm { display: none; }
-    
+p.formExtra { text-align: right; width: 318px; }
+p.form-error { width: 318px; color: #9b1a1a; display: none; }
+#emailNotVerified h3 { padding-left: 40px; background: top left no-repeat url(../images/warning.png); background-size: 32px 32px; height: 32px; line-height: 32px; }
+#signupAdminForm { display: block; }
+#adminSignupSuccess { display: none; }
+#loginAdminForm { display: none; }
+#signupUserForm { display: none; margin-bottom: 20px; }
+#userInfo { display: none; }
+#emailNotVerified { display: none; }
+#forgotPasswordForm { display: none; }
+#PasswordResetEmailSent { display: none; } 
+#userCreated { display: none; }
+#createAnother { padding: 15px; text-decoration: none; background: #ccc; border: 0 none; cursor: pointer; -webkit-border-radius: 5px; border-radius: 5px; width: 100px; height: 40px; color: #000; font-size: 16px; margin-top: 10px; display: none; }
 label.error { margin-left: 10px; color: #555; }
 ::-webkit-input-placeholder { font-size: 16px; line-height: 30px; }
 :-moz-placeholder { font-size: 16px; line-height: 30px; }
 ::-moz-placeholder { font-size: 16px; line-height: 30px; }
 :-ms-input-placeholder { font-size: 16px; line-height: 30px; }
+
+/* Cashup */
+#cashupTable th { padding: 10px 20px; font-size: 30px; text-align: left; }
+#cashupTable td { padding: 10px 20px; font-size: 18px; }
+#cashupTable input[type="number"], #cashupTotal { text-align: right; font-size: 25px; }
+#cashupTable tr td:first-child { text-align: left; }
+#cashupTable #resetButton { display: none; width: 100px; height: 30px; background: grey; border-radius: 4px; padding: 8px 14px; color: #000; cursor: pointer; }
+#cashupTable td#cashupTotal { font-weight: bold; color: #222; font-size: 30px; }
