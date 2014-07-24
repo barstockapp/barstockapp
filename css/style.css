@@ -46,7 +46,7 @@ img.cashupLogoImg { width: 460px; }
 .toggleReset { display: none; }
 #resetButton, #printButton { background: #aaa; border-radius: 4px; padding: 8px 14px; color: #000; font-weight: bold; cursor: pointer; }
 #printButton { padding: 8px 18px; }
-#resetButton { display: none; margin-top: -10px; position: absolute; left: 360px; }
+#resetButton { display: none; margin-top: -10px; position: absolute; left: 370px; }
 #cashupTable td#cashupTotal { font-weight: bold; color: #222; font-size: 30px; }
 #timeStamp { text-align: right; }
 
