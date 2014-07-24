@@ -20,6 +20,10 @@
                 <th>Cashup</th><th><a id="resetButton">Reset</a></th>
             </tr>
             <tr>
+                <td>Name</td>
+                <td><input type="text" id="cashierName" name="cashierName"></td>
+            </tr>
+            <tr>
                 <td>Total Sales</td>
                 <td><input type="number" id="totalSales" name="totalSales"></td>
             </tr>
@@ -36,8 +40,9 @@
                 <td id="cashupTotal"></td>
             </tr>
             <tr class="toggleReset">
-                <td><a id="printButton">Print</a></td>
+                <td><a id="printButton">Print</a><a href="" id="emailButton">E-Mail Cashup</a></td>
                 <td id="timeStamp"></td>
+                
             </tr>
         </table>
     </form>
@@ -49,9 +54,21 @@
 <script>
     
 $(document).ready(function () {
+
+    var $cashierName;
+    var $totalSales;
+    var $ccSales;
+    var $ccSlips;
+    var $totalSalesMinCCSales;
+    var $diffCCSlipsCCSales;
+    var $total;
+    var $datetime;
     
     $("#cashupForm").validate({
     rules: {
+        cashierName: {
+            required: true
+      },
         totalSales: {
             required: true,
             number: true
@@ -66,6 +83,9 @@ $(document).ready(function () {
       }
     },
     messages: {
+        cashierName: {
+            required: "Specify Name"
+      },
         totalSales: {
             required: "Specify Total Sales"
       },
@@ -77,18 +97,19 @@ $(document).ready(function () {
       }
     },
     submitHandler: function (form) { // for demo
-            var $totalSales = $("#totalSales").val();
-            var $ccSales = $("#ccSales").val();
-            var $ccSlips = $("#ccSlips").val();
+            $cashierName = $("#cashierName").val();
+            $totalSales = $("#totalSales").val();
+            $ccSales = $("#ccSales").val();
+            $ccSlips = $("#ccSlips").val();
 
-            var $totalSalesMinCCSales = ($totalSales - $ccSlips);
-            var $diffCCSlipsCCSales;
+            $totalSalesMinCCSales = ($totalSales - $ccSlips);
+            
             if ($ccSales > $ccSlips) {
                 $diffCCSlipsCCSales = 0;
             }else {
                $diffCCSlipsCCSales = ($ccSlips - $ccSales) * 0.10;
             }
-            var $total = $totalSalesMinCCSales + $diffCCSlipsCCSales;
+            $total = $totalSalesMinCCSales + $diffCCSlipsCCSales;
             $total = "R " + $total;
             $("#cashupTotal").text($total);
             $("#cashupSubmit").hide();
@@ -102,8 +123,8 @@ $(document).ready(function () {
             Date.prototype.timeNow = function () {
                 return ((this.getHours() < 10)?"0":"") + this.getHours() +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
             }
-            var datetime = "Time: " + new Date().today() + " @ " + new Date().timeNow();
-            $("#timeStamp").text(datetime);
+            $datetime = "Time: " + new Date().today() + " @ " + new Date().timeNow();
+            $("#timeStamp").text($datetime);
 
         }
     });
@@ -126,6 +147,15 @@ $(document).ready(function () {
     $('input').on('input', function() { 
         $("#resetButton").show() // get the current value of the input field.
     });
+
+    $("#emailButton").click(function() {
+    this.href = "mailto:paul.nel@me.com?subject=Cashup&body=";
+    this.href += getBody();
+    });
+
+    function getBody() {
+        return '<b>Cashier:  '+$cashierName+'%0D%0A%0D%0ATotal Sales:  R'+$totalSales+'%0D%0A%0D%0ACCSales:  R'+$ccSales+'%0D%0A%0D%0ACCSlips:  R'+$ccSlips+'%0D%0A%0D%0ATotal:  '+$total+'</b>%0D%0A%0D%0A'+$datetime+' ';
+    }
     
 });
 
