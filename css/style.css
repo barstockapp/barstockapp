@@ -40,5 +40,7 @@ label.error { margin-left: 10px; color: #555; }
 #cashupTable td { padding: 10px 20px; font-size: 18px; }
 #cashupTable input[type="number"], #cashupTotal { text-align: right; font-size: 25px; }
 #cashupTable tr td:first-child { text-align: left; }
-#cashupTable #resetButton { display: none; width: 100px; height: 30px; background: grey; border-radius: 4px; padding: 8px 14px; color: #000; cursor: pointer; }
+#toggleReset { display: none; }
+#cashupTable #resetButton { width: 100px; height: 30px; background: grey; border-radius: 4px; padding: 8px 14px; color: #000; cursor: pointer; }
 #cashupTable td#cashupTotal { font-weight: bold; color: #222; font-size: 30px; }
+#timeStamp { text-align: right; }

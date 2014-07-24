@@ -33,9 +33,9 @@
                 <td><button type="submit" id="cashupSubmit" title="Submit">Cashup</button></td>
                 <td id="cashupTotal"></td>
             </tr>
-            <tr>
+            <tr id="toggleReset">
                 <td><a id="resetButton">Reset</a></td>
-                <td><a id="resetButton">Reset</a></td>
+                <td id="timeStamp"></td>
             </tr>
         </table>
     </form>
@@ -90,18 +90,31 @@ $(document).ready(function () {
             $total = "R " + $total;
             $("#cashupTotal").text($total);
             $("#cashupSubmit").hide();
-            $("#resetButton").show();
+            $("#toggleReset").show();
+
+            // For todays date;
+            Date.prototype.today = function () { 
+                return ((this.getDate() < 10)?"0":"") + this.getDate() +"/"+(((this.getMonth()+1) < 10)?"0":"") + (this.getMonth()+1) +"/"+ this.getFullYear();
+            }
+            // For the time now
+            Date.prototype.timeNow = function () {
+                return ((this.getHours() < 10)?"0":"") + this.getHours() +":"+ ((this.getMinutes() < 10)?"0":"") + this.getMinutes() +":"+ ((this.getSeconds() < 10)?"0":"") + this.getSeconds();
+            }
+            var datetime = "Time: " + new Date().today() + " @ " + new Date().timeNow();
+            $("#timeStamp").text(datetime);
+
         }
     });
 
 $("#resetButton").click(function(){
+
     $("#totalSales").val("");
     $("#ccSales").val("");
     $("#ccSlips").val("");
     $("#cashupTotal").text("");
-    $("#resetButton").hide();
+    $("#timeStamp").text("");
+    $("#toggleReset").hide();
     $("#cashupSubmit").show();
-
 });
     
 });
