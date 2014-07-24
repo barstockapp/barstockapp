@@ -12,10 +12,12 @@
 
 <body>
 
+    <img src="images/cafe-mexico.png" alt="cafe mexico" class="cashupLogoImg" />
     <form id="cashupForm">
         <table cellpadding="0" cellspacing="0" id="cashupTable">
+
             <tr>
-                <th colspan="2">Cashup</th>
+                <th>Cashup</th><th><a id="resetButton">Reset</a></th>
             </tr>
             <tr>
                 <td>Total Sales</td>
@@ -33,8 +35,8 @@
                 <td><button type="submit" id="cashupSubmit" title="Submit">Cashup</button></td>
                 <td id="cashupTotal"></td>
             </tr>
-            <tr id="toggleReset">
-                <td><a id="resetButton">Reset</a></td>
+            <tr class="toggleReset">
+                <td><a id="printButton">Print</a></td>
                 <td id="timeStamp"></td>
             </tr>
         </table>
@@ -90,7 +92,7 @@ $(document).ready(function () {
             $total = "R " + $total;
             $("#cashupTotal").text($total);
             $("#cashupSubmit").hide();
-            $("#toggleReset").show();
+            $(".toggleReset").show();
 
             // For todays date;
             Date.prototype.today = function () { 
@@ -106,16 +108,24 @@ $(document).ready(function () {
         }
     });
 
-$("#resetButton").click(function(){
+    $("#resetButton").click(function(){
 
-    $("#totalSales").val("");
-    $("#ccSales").val("");
-    $("#ccSlips").val("");
-    $("#cashupTotal").text("");
-    $("#timeStamp").text("");
-    $("#toggleReset").hide();
-    $("#cashupSubmit").show();
-});
+        $("#totalSales").val("");
+        $("#ccSales").val("");
+        $("#ccSlips").val("");
+        $("#cashupTotal").text("");
+        $("#timeStamp").text("");
+        $(".toggleReset").hide();
+        $("#cashupSubmit").show();
+    });
+
+    $("#printButton").click(function(){
+        window.print();
+    });
+
+    $('input').on('input', function() { 
+        $("#resetButton").show() // get the current value of the input field.
+    });
     
 });
 
