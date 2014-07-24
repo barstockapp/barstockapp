@@ -44,9 +44,9 @@ img.cashupLogoImg { width: 460px; }
 #cashupTable input[type="number"], #cashupTotal { text-align: right; font-size: 25px; }
 #cashupTable tr td:first-child { text-align: left; }
 .toggleReset { display: none; }
-#resetButton, #printButton { width: 100px; height: 30px; background: #aaa; border-radius: 4px; padding: 8px 14px; color: #000; font-weight: bold; cursor: pointer; }
+#resetButton, #printButton { background: #aaa; border-radius: 4px; padding: 8px 14px; color: #000; font-weight: bold; cursor: pointer; }
 #printButton { padding: 8px 18px; }
-#resetButton { display: none; }
+#resetButton { display: none; margin-top: -10px; position: absolute; left: 360px; }
 #cashupTable td#cashupTotal { font-weight: bold; color: #222; font-size: 30px; }
 #timeStamp { text-align: right; }
 
